@@ -1,0 +1,2 @@
+[console_scripts]
+code-search-mcp = code_search_mcp:main
