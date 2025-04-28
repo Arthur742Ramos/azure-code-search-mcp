@@ -37,23 +37,10 @@ The server is designed specifically for scenarios where the project codebase is 
 
 1.  **Clone the Repository:**
     ```bash
-    git clone <your-repo-url>
-    cd <your-repo-directory>
+    git clone https://github.com/Arthur742Ramos/azure-code-search-mcp
+    cd azure-code-search-mcp
     ```
-
-2.  **Create and Activate Virtual Environment:**
-    *   **Linux/macOS:**
-        ```bash
-        python3 -m venv venv
-        source venv/bin/activate
-        ```
-    *   **Windows:**
-        ```bash
-        python -m venv venv
-        .\venv\Scripts\activate
-        ```
-
-3.  **Install Requirements:**
+2.  **Install Requirements:**
     Create a file named `requirements.txt` in the root of the repository with the following content:
 
     ```txt
@@ -77,7 +64,7 @@ The server is designed specifically for scenarios where the project codebase is 
     pip install -r requirements.txt
     ```
 
-4.  **Download NLTK Data:** The first time you run the server, it will attempt to download the necessary 'stopwords' corpus from NLTK automatically. Ensure you have an internet connection during the first run.
+3.  **Download NLTK Data:** The first time you run the server, it will attempt to download the necessary 'stopwords' corpus from NLTK automatically. Ensure you have an internet connection during the first run.
 
 ## Configuration
 
