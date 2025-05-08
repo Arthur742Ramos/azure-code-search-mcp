@@ -45,18 +45,14 @@ The server is designed specifically for scenarios where the project codebase is 
 
     ```txt
     # requirements.txt
-    model-context-protocol
-    click
-    anyio
-    python-dotenv
-    openai
-    azure-core
-    azure-search-documents
-    numpy
-    starlette
-    uvicorn
-    httpx
-    nltk
+    python-dotenv>=1.0.0
+    numpy>=1.24.0
+    openai>=1.1.0
+    azure-identity>=1.15.0
+    azure-search-documents>=11.4.0
+    mcp>=1.6.0 
+    uvicorn>=0.24.0
+    nltk>=3.8.1
     ```
 
     Then, install the packages using pip:
