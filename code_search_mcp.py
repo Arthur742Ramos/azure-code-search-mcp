@@ -172,14 +172,26 @@ class CodeSearchService:
     def get_file_content(self, file_path: str) -> Optional[str]:
         """Retrieves the full content of a specific file from the index (synchronous)."""
         logger.info(f"Attempting to retrieve content for file: {file_path}")
-        escaped_path = self._escape_filepath_for_filter(file_path)
+        
+        # Handle both full URLs and path-only formats
+        if not file_path.startswith("https://"):
+            # If it's just a path, search for documents that end with this path
+            escaped_path = self._escape_filepath_for_filter(file_path)
+            filter_expr = f"search.ismatch('*{escaped_path}', 'filePath')"
+            logger.debug(f"Using wildcard filter for path-only: {filter_expr}")
+        else:
+            # If it's a full URL, do exact match
+            escaped_path = self._escape_filepath_for_filter(file_path)
+            filter_expr = f"filePath eq '{escaped_path}'"
+            logger.debug(f"Using exact match filter for URL: {filter_expr}")
+        
         try:
             results = self.search_client.search(
-                search_text=None, filter=f"filePath eq '{escaped_path}'", select=["content"], top=1
+                search_text=None, filter=filter_expr, select=["content", "filePath"], top=1
             )
             doc = next(iter(results), None)
             if doc and "content" in doc:
-                logger.info(f"Successfully retrieved content for: {file_path}")
+                logger.info(f"Successfully retrieved content for: {file_path} (found as: {doc.get('filePath', 'N/A')})")
                 return doc["content"]
             else:
                 logger.warning(f"File not found or content missing in index for: {file_path}")
@@ -191,10 +203,22 @@ class CodeSearchService:
     def list_symbols_in_file(self, file_path: str) -> Optional[Dict[str, List[str]]]:
         """Retrieves indexed functions and classes for a specific file (synchronous)."""
         logger.info(f"Attempting to retrieve symbols for file: {file_path}")
-        escaped_path = self._escape_filepath_for_filter(file_path)
+        
+        # Handle both full URLs and path-only formats
+        if not file_path.startswith("https://"):
+            # If it's just a path, search for documents that end with this path
+            escaped_path = self._escape_filepath_for_filter(file_path)
+            filter_expr = f"search.ismatch('*{escaped_path}', 'filePath')"
+            logger.debug(f"Using wildcard filter for path-only: {filter_expr}")
+        else:
+            # If it's a full URL, do exact match
+            escaped_path = self._escape_filepath_for_filter(file_path)
+            filter_expr = f"filePath eq '{escaped_path}'"
+            logger.debug(f"Using exact match filter for URL: {filter_expr}")
+        
         try:
             results = self.search_client.search(
-                search_text=None, filter=f"filePath eq '{escaped_path}'", select=["functions", "classes"], top=1
+                search_text=None, filter=filter_expr, select=["functions", "classes", "filePath"], top=1
             )
             doc = next(iter(results), None)
             if doc:
@@ -202,7 +226,7 @@ class CodeSearchService:
                     "functions": doc.get("functions", []),
                     "classes": doc.get("classes", [])
                 }
-                logger.info(f"Successfully retrieved symbols for: {file_path}")
+                logger.info(f"Successfully retrieved symbols for: {file_path} (found as: {doc.get('filePath', 'N/A')})")
                 return symbols
             else:
                 logger.warning(f"File not found or symbols missing in index for: {file_path}")
